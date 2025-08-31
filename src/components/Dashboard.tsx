@@ -56,7 +56,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
               >
                 <Menu className="w-6 h-6 text-gray-600" />
               </button>
-              <ASmanCharacter size="medium" />
+              <img 
+                src="/Logo.jpg" 
+                alt="ASman Learning Logo" 
+                className="w-12 h-12 rounded-full object-cover shadow-md"
+              />
               <div>
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-sky-600 bg-clip-text text-transparent">
                   ASman Learning
@@ -88,7 +92,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.6 }}
           >
-            <ASmanCharacter size="large" className="mx-auto mb-6" />
+            <img 
+              src="/Logo.jpg" 
+              alt="ASman Learning Logo" 
+              className="w-24 h-24 rounded-full object-cover shadow-lg mx-auto mb-6"
+            />
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
               Welcome to ASman Learning
             </h2>

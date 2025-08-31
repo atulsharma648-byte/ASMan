@@ -53,7 +53,11 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-200">
           <div className="flex items-center space-x-3">
-            <ASmanCharacter size="small" />
+            <img 
+              src="/Logo.jpg" 
+              alt="ASman Learning Logo" 
+              className="w-8 h-8 rounded-full object-cover"
+            />
             <div>
               <h3 className="font-semibold text-gray-900">Chat History</h3>
               <p className="text-sm text-gray-500">{sessions.length} conversations</p>
@@ -115,7 +119,11 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
         {/* Footer */}
         <div className="p-4 border-t border-gray-200">
           <div className="text-center">
-            <ASmanCharacter size="small" className="mx-auto mb-2" />
+            <img 
+              src="/Logo.jpg" 
+              alt="ASman Learning Logo" 
+              className="w-8 h-8 rounded-full object-cover mx-auto mb-2"
+            />
             <p className="text-xs text-gray-500">
               ASman Learning v1.0
               <br />

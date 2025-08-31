@@ -104,7 +104,11 @@ export const LessonPlayer: React.FC<LessonPlayerProps> = ({
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <ASmanCharacter size="medium" animate={isPlaying} />
+              <img 
+                src="/Logo.jpg" 
+                alt="ASman Learning Logo" 
+                className="w-12 h-12 rounded-full object-cover shadow-md"
+              />
               <div>
                 <h3 className="text-lg font-bold text-gray-900">Teacher Controls</h3>
                 <p className="text-gray-600">Control your lesson presentation</p>
