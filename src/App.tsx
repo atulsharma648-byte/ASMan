@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
+import { ArrowLeft } from 'lucide-react';
 import { Dashboard } from './components/Dashboard';
 import { ChatSidebar } from './components/ChatSidebar';
 import { ClassSelection } from './components/ClassSelection';
