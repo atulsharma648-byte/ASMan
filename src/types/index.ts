@@ -4,11 +4,17 @@ export interface LessonContent {
     question: string;
     options: string[];
     correct: number;
+    explanation?: string;
   }>;
   activity: string;
   globalMethod: string;
   hindiTranslation: Record<string, string>;
   isGlobalVersion?: boolean;
+  lessonData?: {
+    lessonTitle: string;
+    ageGroup: string;
+    duration: string;
+  };
 }
 
 export interface ChatSession {

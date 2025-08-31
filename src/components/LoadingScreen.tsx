@@ -15,11 +15,11 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({
   const loadingSteps = isGlobalVersion ? [
     { icon: BookOpen, text: "Researching global teaching methods" },
     { icon: Lightbulb, text: "Gathering international perspectives" },
-    { icon: Sparkles, text: "Creating cross-cultural connections" }
+    { icon: Sparkles, text: "Creating comprehensive 800-word lesson pack" }
   ] : [
-    { icon: BookOpen, text: "Analyzing curriculum standards" },
-    { icon: Lightbulb, text: "Generating creative content" },
-    { icon: Sparkles, text: "Adding interactive elements" }
+    { icon: BookOpen, text: "Analyzing Indian curriculum standards" },
+    { icon: Lightbulb, text: "Creating professional 500-word lesson" },
+    { icon: Sparkles, text: "Adding audio-friendly formatting" }
   ];
 
   return (
