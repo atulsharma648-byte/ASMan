@@ -33,7 +33,7 @@ export const LessonPlayer: React.FC<LessonPlayerProps> = ({
   topic,
   globalStyle,
   onBack,
-  onStyleChange
+  onStyleChange,
   onRequestGlobalVersion
 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
