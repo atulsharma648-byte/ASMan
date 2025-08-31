@@ -8,6 +8,7 @@ export interface LessonContent {
   activity: string;
   globalMethod: string;
   hindiTranslation: Record<string, string>;
+  isGlobalVersion?: boolean;
 }
 
 export interface ChatSession {
@@ -19,6 +20,7 @@ export interface ChatSession {
   topic?: string;
   lessonContent?: LessonContent;
   globalStyle?: GlobalStyle;
+  hasGlobalVersion?: boolean;
 }
 
 export type GlobalStyle = 'chinese' | 'japanese' | 'american' | 'european';

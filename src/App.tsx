@@ -177,7 +177,7 @@ function App() {
       setCurrentStep('loading');
       
       try {
-        const lesson = await generateLesson(selectedClass, selectedSubject, selectedTopic, newStyle);
+        const lesson = await generateLesson(selectedClass, selectedSubject, selectedTopic, newStyle, currentLesson?.isGlobalVersion);
         
         if (lesson) {
           setCurrentLesson(lesson);
@@ -189,6 +189,33 @@ function App() {
               globalStyle: newStyle
             });
           }
+        }
+      } catch (err) {
+        setCurrentStep('error');
+      }
+    }
+  };
+
+  const handleRequestGlobalVersion = async () => {
+    if (selectedClass && selectedSubject && selectedTopic) {
+      setCurrentStep('loading');
+      
+      try {
+        const globalLesson = await generateLesson(selectedClass, selectedSubject, selectedTopic, selectedStyle, true);
+        
+        if (globalLesson) {
+          const enhancedLesson = { ...globalLesson, isGlobalVersion: true };
+          setCurrentLesson(enhancedLesson);
+          setCurrentStep('lesson-player');
+          
+          if (currentSession) {
+            updateSession(currentSession.id, {
+              lessonContent: enhancedLesson,
+              hasGlobalVersion: true
+            });
+          }
+        } else {
+          setCurrentStep('error');
         }
       } catch (err) {
         setCurrentStep('error');
@@ -288,7 +315,9 @@ function App() {
           )}
 
           {currentStep === 'loading' && (
-            <LoadingScreen />
+            <LoadingScreen 
+              isGlobalVersion={currentLesson?.isGlobalVersion}
+            />
           )}
 
           {currentStep === 'error' && (
@@ -308,6 +337,7 @@ function App() {
               globalStyle={selectedStyle}
               onBack={handleBack}
               onStyleChange={handleStyleChange}
+              onRequestGlobalVersion={handleRequestGlobalVersion}
             />
           )}
         </AnimatePresence>

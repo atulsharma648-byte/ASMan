@@ -5,12 +5,18 @@ import { ASmanCharacter } from './ASmanCharacter';
 
 interface LoadingScreenProps {
   message?: string;
+  isGlobalVersion?: boolean;
 }
 
 export const LoadingScreen: React.FC<LoadingScreenProps> = ({ 
-  message = "ASman is creating your lesson..." 
+  message = "ASman is creating your lesson...",
+  isGlobalVersion = false
 }) => {
-  const loadingSteps = [
+  const loadingSteps = isGlobalVersion ? [
+    { icon: BookOpen, text: "Researching global teaching methods" },
+    { icon: Lightbulb, text: "Gathering international perspectives" },
+    { icon: Sparkles, text: "Creating cross-cultural connections" }
+  ] : [
     { icon: BookOpen, text: "Analyzing curriculum standards" },
     { icon: Lightbulb, text: "Generating creative content" },
     { icon: Sparkles, text: "Adding interactive elements" }
@@ -42,7 +48,7 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({
           transition={{ duration: 0.6 }}
           className="text-2xl font-bold text-gray-900 mb-4"
         >
-          {message}
+          {isGlobalVersion ? "🌍 Creating Global Version..." : message}
         </motion.h2>
 
         {/* Loading Steps */}

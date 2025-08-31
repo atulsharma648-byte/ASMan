@@ -22,9 +22,27 @@ TEACHING STYLES:
 Always include Indian cultural context, use familiar examples (like cricket, Bollywood, Indian festivals), and end with teacher encouragement. Ensure content is appropriate for the specified class level and Indian curriculum standards.
 `;
 
+const GLOBAL_VERSION_INSTRUCTION = `
+You are ASman, creating ENHANCED global lesson content for Indian classrooms.
+
+ENHANCED GLOBAL APPROACH: Provide comprehensive international perspectives including:
+- Cross-cultural examples from different countries and regions
+- Global best practices and international standards
+- Real-world case studies from various cultures
+- Comparative analysis showing different approaches worldwide
+- International applications and connections
+
+CONTENT LENGTH: 500-800 words with rich detail and multiple perspectives
+STRUCTURE: Use clear headings, subheadings, bullet points for excellent readability
+TONE: Educational yet engaging, maintaining cultural sensitivity
+
+Always maintain the same JSON format but with significantly expanded content that showcases global perspectives while remaining relevant to Indian students.
+`;
+
 class GeminiService {
   private genAI: GoogleGenerativeAI | null = null;
   private model: any = null;
+  private globalModel: any = null;
 
   constructor() {
     this.initializeAPI();
@@ -43,6 +61,10 @@ class GeminiService {
         model: 'gemini-1.5-flash',
         systemInstruction: ASMAN_SYSTEM_INSTRUCTION
       });
+      this.globalModel = this.genAI.getGenerativeModel({
+        model: 'gemini-1.5-flash',
+        systemInstruction: GLOBAL_VERSION_INSTRUCTION
+      });
     } catch (error) {
       console.error('Error initializing Gemini:', error);
     }
@@ -52,23 +74,36 @@ class GeminiService {
     classLevel: ClassLevel,
     subject: Subject,
     topic: string,
-    globalStyle: GlobalStyle
+    globalStyle: GlobalStyle,
+    isGlobalVersion: boolean = false
   ): Promise<LessonContent> {
-    if (!this.model) {
-      return this.getDemoLesson(classLevel, subject, topic, globalStyle);
+    const modelToUse = isGlobalVersion ? this.globalModel : this.model;
+    
+    if (!modelToUse) {
+      return this.getDemoLesson(classLevel, subject, topic, globalStyle, isGlobalVersion);
     }
 
     try {
       const classNumber = classLevel.replace('class-', '');
-      const prompt = `Create a lesson for Class ${classNumber} ${subject} on topic "${topic}" using ${globalStyle} teaching style. 
+      const contentLength = isGlobalVersion ? '500-800 words' : '300-500 words';
+      const versionType = isGlobalVersion ? 'GLOBAL VERSION with international perspectives' : 'STANDARD METHOD';
+      
+      const prompt = `Create a ${versionType} lesson for Class ${classNumber} ${subject} on topic "${topic}" using ${globalStyle} teaching style.
       
       Requirements:
-      - Age-appropriate for ${classNumber === '1' ? '6-7' : classNumber === '2' ? '7-8' : classNumber === '3' ? '8-9' : classNumber === '4' ? '9-10' : classNumber === '5' ? '10-11' : classNumber === '6' ? '11-12' : classNumber === '7' ? '12-13' : classNumber === '8' ? '13-14' : classNumber === '9' ? '14-15' : '15-16'} year olds
+      - Content length: ${contentLength}
+      - Age-appropriate for ${this.getAgeRange(classNumber)} year olds
       - Include Indian cultural context and examples
       - Follow ${globalStyle} teaching methodology
+      ${isGlobalVersion ? `
+      - ENHANCED GLOBAL CONTENT: Include international perspectives, cross-cultural examples, global best practices
+      - Multiple country examples and comparative analysis
+      - Real-world case studies from various regions
+      - International applications and connections` : ''}
+      - Use clear headings and bullet points for readability
       - Respond only with valid JSON matching the specified format`;
 
-      const result = await this.model.generateContent(prompt);
+      const result = await modelToUse.generateContent(prompt);
       const response = await result.response;
       const text = response.text();
       
@@ -77,7 +112,7 @@ class GeminiService {
       return JSON.parse(cleanedText);
     } catch (error) {
       console.error('Error generating lesson:', error);
-      return this.getDemoLesson(classLevel, subject, topic, globalStyle);
+      return this.getDemoLesson(classLevel, subject, topic, globalStyle, isGlobalVersion);
     }
   }
 
@@ -97,11 +132,26 @@ class GeminiService {
     }
   }
 
-  private getDemoLesson(classLevel: ClassLevel, subject: Subject, topic: string, globalStyle: GlobalStyle): LessonContent {
+  private getAgeRange(classNumber: string): string {
+    const ageMap: Record<string, string> = {
+      '1': '6-7', '2': '7-8', '3': '8-9', '4': '9-10', '5': '10-11',
+      '6': '11-12', '7': '12-13', '8': '13-14', '9': '14-15', '10': '15-16'
+    };
+    return ageMap[classNumber] || '6-16';
+  }
+
+  private getDemoLesson(
+    classLevel: ClassLevel, 
+    subject: Subject, 
+    topic: string, 
+    globalStyle: GlobalStyle,
+    isGlobalVersion: boolean = false
+  ): LessonContent {
     const classNumber = classLevel.replace('class-', '');
+    const baseContent = isGlobalVersion ? 'Enhanced Global Version: ' : '';
     
     return {
-      explanation: `Welcome to our ${topic} lesson for Class ${classNumber}! Let's explore this exciting topic together using ${globalStyle} teaching methods. This lesson is specially designed for Indian students with examples they can relate to.`,
+      explanation: `${baseContent}Welcome to our ${topic} lesson for Class ${classNumber}! Let's explore this exciting topic together using ${globalStyle} teaching methods. This lesson is specially designed for Indian students with examples they can relate to.${isGlobalVersion ? '\n\n## International Perspectives\n\nAround the world, students learn about ' + topic + ' in fascinating ways:\n\n• **China**: Emphasizes systematic practice and repetition\n• **Japan**: Focuses on detailed observation and respect for process\n• **USA**: Encourages questioning and hands-on exploration\n• **Europe**: Integrates creative expression and collaborative learning\n\n## Global Best Practices\n\nInternational research shows that effective ' + topic + ' education includes:\n• Multi-sensory learning approaches\n• Cultural context integration\n• Real-world applications\n• Student-centered discovery' : ''}`,
       questions: [
         {
           question: `What is the main concept we're learning about ${topic}?`,
@@ -114,18 +164,23 @@ class GeminiService {
           correct: 1
         },
         {
-          question: `What makes ${topic} interesting to learn?`,
-          options: ['It\'s boring', 'It\'s challenging but fun', 'Too difficult', 'Not useful'],
-          correct: 1
+          question: isGlobalVersion ? `How do students in other countries learn about ${topic}?` : `What makes ${topic} interesting to learn?`,
+          options: isGlobalVersion ? ['Same as India', 'Different methods worldwide', 'Only in English', 'Not taught elsewhere'] : ['It\'s boring', 'It\'s challenging but fun', 'Too difficult', 'Not useful'],
+          correct: isGlobalVersion ? 1 : 1
         }
       ],
-      activity: `Let's create a hands-on activity about ${topic} using common materials available in Indian classrooms. Students can work in groups to explore and discover!`,
-      globalMethod: `Using ${globalStyle} methodology: ${this.getStyleDescription(globalStyle)}`,
+      activity: `${isGlobalVersion ? 'Global Activity: ' : ''}Let's create a hands-on activity about ${topic} using common materials available in Indian classrooms. Students can work in groups to explore and discover!${isGlobalVersion ? ' This activity is inspired by international teaching methods and can be adapted using techniques from different countries.' : ''}`,
+      globalMethod: `Using ${globalStyle} methodology: ${this.getStyleDescription(globalStyle)}${isGlobalVersion ? '\n\nThis approach has been successfully implemented in schools worldwide and adapted for Indian classroom contexts.' : ''}`,
       hindiTranslation: {
         [topic]: `${topic} (विषय)`,
         'learning': 'सीखना',
         'students': 'छात्र',
-        'activity': 'गतिविधि'
+        'activity': 'गतिविधि',
+        ...(isGlobalVersion && {
+          'global': 'वैश्विक',
+          'international': 'अंतर्राष्ट्रीय',
+          'culture': 'संस्कृति'
+        })
       }
     };
   }

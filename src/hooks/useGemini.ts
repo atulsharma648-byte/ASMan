@@ -10,13 +10,14 @@ export const useGemini = () => {
     classLevel: ClassLevel,
     subject: Subject,
     topic: string,
-    globalStyle: GlobalStyle
+    globalStyle: GlobalStyle,
+    isGlobalVersion: boolean = false
   ): Promise<LessonContent | null> => {
     setIsLoading(true);
     setError(null);
 
     try {
-      const lesson = await geminiService.generateLesson(classLevel, subject, topic, globalStyle);
+      const lesson = await geminiService.generateLesson(classLevel, subject, topic, globalStyle, isGlobalVersion);
       return lesson;
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to generate lesson';

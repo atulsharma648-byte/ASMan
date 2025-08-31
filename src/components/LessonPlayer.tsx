@@ -23,6 +23,7 @@ interface LessonPlayerProps {
   globalStyle: GlobalStyle;
   onBack: () => void;
   onStyleChange: (style: GlobalStyle) => void;
+  onRequestGlobalVersion?: () => void;
 }
 
 export const LessonPlayer: React.FC<LessonPlayerProps> = ({
@@ -33,6 +34,7 @@ export const LessonPlayer: React.FC<LessonPlayerProps> = ({
   globalStyle,
   onBack,
   onStyleChange
+  onRequestGlobalVersion
 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isHindi, setIsHindi] = useState(false);
@@ -349,6 +351,48 @@ export const LessonPlayer: React.FC<LessonPlayerProps> = ({
             </AnimatePresence>
           </motion.div>
         </div>
+
+        {/* Global Version Option */}
+        {!lessonContent.isGlobalVersion && onRequestGlobalVersion && (
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+            className="mt-8 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-2xl p-8 text-white text-center"
+          >
+            <h3 className="text-2xl font-bold mb-4">🌍 Want More Global Perspectives?</h3>
+            <p className="text-purple-100 mb-6 max-w-2xl mx-auto">
+              Unlock enhanced content with international examples, cross-cultural insights, 
+              and global best practices from around the world!
+            </p>
+            <motion.button
+              onClick={onRequestGlobalVersion}
+              className="bg-white text-purple-600 px-8 py-3 rounded-lg font-medium hover:bg-purple-50 transition-colors"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              Generate Global Version
+            </motion.button>
+          </motion.div>
+        )}
+
+        {/* Global Version Indicator */}
+        {lessonContent.isGlobalVersion && (
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+            className="mt-8 bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl p-6 text-white text-center"
+          >
+            <div className="flex items-center justify-center space-x-2">
+              <Globe className="w-6 h-6" />
+              <span className="text-lg font-semibold">Global Version Active</span>
+            </div>
+            <p className="text-green-100 mt-2">
+              This lesson includes international perspectives and global best practices!
+            </p>
+          </motion.div>
+        )}
 
         {/* Hindi Translations Panel */}
         {Object.keys(lessonContent.hindiTranslation).length > 0 && (
