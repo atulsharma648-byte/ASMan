@@ -84,7 +84,7 @@ export const ErrorScreen: React.FC<ErrorScreenProps> = ({
               <span>Go Back</span>
             </motion.button>
           )}
-        </div>
+        </motion.div>
 
         {/* Help Text */}
         <motion.div
